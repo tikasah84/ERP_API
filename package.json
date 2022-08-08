@@ -1,0 +1,28 @@
+{
+  "name": "erp",
+  "version": "1.0.0",
+  "description": "This is API in node js with JOI validation for ERP",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon ./src/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tikasah84/ERP_API.git"
+  },
+  "author": "Tika sah",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tikasah84/ERP_API/issues"
+  },
+  "homepage": "https://github.com/tikasah84/ERP_API#readme",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^16.0.1",
+    "express": "^4.18.1",
+    "joi": "^17.6.0",
+    "mongoose": "^6.5.1",
+    "nodemon": "^2.0.19"
+  }
+}
