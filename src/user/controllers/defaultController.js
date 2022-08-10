@@ -1,4 +1,4 @@
-const errorFunction = require("./../utils/errorFunction");
+const errorFunction = require("../../utils/errorFunction");
 
 const defaultController = async (req, res, next) => {
   res.status(200);

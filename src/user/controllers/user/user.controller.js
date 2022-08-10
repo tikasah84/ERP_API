@@ -1,6 +1,12 @@
 const User = require("../../models/user");
-const errorFunction = require("../../utils/errorFunction");
-const securePassword = require("./../../utils/securePassword");
+const errorFunction = require("../../../utils/errorFunction");
+var jwt = require("jsonwebtoken");
+const {
+  securePassword,
+  checkPassword,
+} = require("../../../utils/securePassword");
+
+//Signup new user here
 
 const addUser = async (req, res, next) => {
   try {
@@ -46,15 +52,19 @@ const addUser = async (req, res, next) => {
     }
   } catch (error) {
     res.status(400);
-    console.log(error);
     return res.json(errorFunction(true, "Error Adding user"));
   }
 };
 
+//Get all user
+
 const getUsers = async (req, res, next) => {
   try {
     const projection = { password: 0 };
-    const allUsers = await User.find().select(projection).lean(true);
+    const allUsers = await User.find()
+      .select(projection)
+      .populate({ path: "address", select: "city state " })
+      .lean(true);
     if (allUsers) {
       res.status(201);
       return res.json(errorFunction(false, "Sending all users", allUsers));
@@ -68,32 +78,87 @@ const getUsers = async (req, res, next) => {
   }
 };
 
+//Login user
+
 const login = async (req, res, next) => {
   try {
-    const existingUser = await User.findOne({
-      email: req.body.email,
-    }).lean(true);
+    var data = await User.find({ email: req.body.email }).exec();
+    if (data.length < 1) {
+      res.status(403);
+      return res.json(errorFunction(true, "User Not Found"));
+    } else {
+      existingUser = data[0];
+    }
+
     if (existingUser) {
-      const isPasswordMatch = await securePassword(
+      const isPasswordMatch = await checkPassword(
         req.body.password,
         existingUser.password
       );
       if (isPasswordMatch) {
-        const userData = {
+        var userData = {
           id: existingUser._id,
           userName: existingUser.userName,
           firstName: existingUser.firstName,
           lastName: existingUser.lastName,
-          email: existingUser,
+          email: existingUser.email,
         };
-        res.status(201);
-        return res.json(errorFunction(false, "User Logged In", userData));
+      } else {
+        res.status(403);
+        return res.json(errorFunction(true, "Invalid Password"));
       }
+
+      jwt.sign(
+        {
+          data: userData,
+        },
+        process.env.SECRET_KEY,
+        { expiresIn: 60 },
+        (err, token) => {
+          if (err) {
+            res.status(403);
+
+            return res.json(errorFunction(true, "Error Signing Token"));
+          } else {
+            res.status(201);
+            return res.json(
+              errorFunction(false, "Login Successful", { token: token })
+            );
+          }
+        }
+      );
     }
-  } catch (err) {
+  } catch (error) {
     res.status(400);
-    return res.json(errorFunction(true, "Error getting user"));
+    return res.json(errorFunction(true, "Error Logging In"));
   }
 };
 
-module.exports = { addUser, getUsers, login };
+//get profile information
+
+const profile = async (req, res, next) => {
+  if (!req.headers.authorization) {
+    res.status(403);
+    return res.json(errorFunction(true, "No Authorization"));
+  } else {
+    const token = req.headers.authorization.split(" ")[1];
+    jwt.verify(token, process.env.SECRET_KEY, (err, decoded) => {
+      if (err) {
+        res.status(403);
+        return res.json(errorFunction(true, err));
+      } else {
+        const userData = {
+          id: decoded.data.id,
+          userName: decoded.data.userName,
+          firstName: decoded.data.firstName,
+          lastName: decoded.data.lastName,
+          email: decoded.data.email,
+        };
+        res.status(201);
+        return res.json(errorFunction(false, "Profile", userData));
+      }
+    });
+  }
+};
+
+module.exports = { addUser, getUsers, login, profile };

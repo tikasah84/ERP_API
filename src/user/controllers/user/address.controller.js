@@ -1,5 +1,5 @@
 const Address = require("../../models/address");
-const errorFunction = require("../../utils/errorFunction");
+const errorFunction = require("../../../utils/errorFunction");
 
 const addAddress = async (req, res, next) => {
   try {

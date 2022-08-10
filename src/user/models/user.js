@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
-const Schema = mongoose;
-const Address = "./address";
-const userSchema = new mongoose.Schema(
+const { Schema } = mongoose;
+const Address = require("../models/address");
+const userSchema = Schema(
   {
     userName: {
       type: String,
@@ -46,7 +46,10 @@ const userSchema = new mongoose.Schema(
       type: String,
       enum: ["Male", "Female"],
     },
-    address: [{ type: Schema.Types.ObjectId, ref: "Address" }],
+    address: {
+      type: Schema.Types.ObjectId,
+      ref: Address,
+    },
   },
   { timestamps: true }
 );

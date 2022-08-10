@@ -4,6 +4,7 @@ const {
   addUser,
   getUsers,
   login,
+  profile,
 } = require("../controllers/user/user.controller");
 const defaultController = require("../controllers/defaultController");
 
@@ -15,5 +16,6 @@ router.post("/addUser", userValidation, addUser);
 
 router.get("/getUsers", getUsers);
 router.get("/login", login);
+router.get("/profile", profile);
 
 module.exports = router;

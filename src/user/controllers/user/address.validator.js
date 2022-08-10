@@ -1,5 +1,5 @@
 const joi = require("joi");
-const errorFunction = require("../../utils/errorFunction");
+const errorFunction = require("../../../utils/errorFunction");
 
 const validation = joi.object({
   city: joi.string().alphanum().min(3).max(25).trim(true).required(),

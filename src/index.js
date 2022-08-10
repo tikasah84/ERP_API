@@ -1,8 +1,8 @@
 require("dotenv").config();
-require("./db/connection");
+require("./user/db/connection");
 const express = require("express");
-const userRoutes = require("./routes/userRoutes");
-const addressRoutes = require("./routes/addressRoutes");
+const userRoutes = require("./user/routes/userRoutes");
+const addressRoutes = require("./user/routes/addressRoutes");
 const bodyParser = require("body-parser");
 
 const app = express();
@@ -13,7 +13,7 @@ app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use("/", userRoutes);
-app.use("/address", addressRoutes);
+//app.use("/address", addressRoutes);
 
 app.listen(port, () => {
   console.log(`Server is running at ${port}`);
