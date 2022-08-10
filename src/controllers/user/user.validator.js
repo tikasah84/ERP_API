@@ -7,6 +7,7 @@ const validation = joi.object({
   lastName: joi.string().min(3).max(25).trim(true).required(),
   email: joi.string().email().trim(true).required(),
   password: joi.string().min(8).trim(true).required(),
+  gender: joi.string().required().trim(true).required(),
   mobileNumber: joi
     .string()
     .length(10)
@@ -24,6 +25,7 @@ const userValidation = async (req, res, next) => {
     email: req.body.email,
     password: req.body.password,
     mobileNumber: req.body.mobileNumber,
+    gender: req.body.gender,
     birthYear: req.body.birthYear,
     is_active: req.body.is_active,
   };

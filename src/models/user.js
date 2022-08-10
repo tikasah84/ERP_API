@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
-
+const Schema = mongoose;
+const Address = "./address";
 const userSchema = new mongoose.Schema(
   {
     userName: {
@@ -41,6 +42,11 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
+    gender: {
+      type: String,
+      enum: ["Male", "Female"],
+    },
+    address: [{ type: Schema.Types.ObjectId, ref: "Address" }],
   },
   { timestamps: true }
 );
