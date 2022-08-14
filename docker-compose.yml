@@ -1,0 +1,40 @@
+version: "3"
+services:
+  user:
+    build: 
+      context: ./USER
+      dockerfile: Dockerfile
+    volumes:
+      - "./user:/user"
+    ports:
+      - "80:4000"
+    command:
+      - "npm"
+      - "start"
+    env_file:
+      - .env
+    environment:
+      - "PORT_USER=$PORT"
+      - "MONGO_URI=$MONGO_URI"
+      - "SECRET_KEY=$SECRET_KEY"
+      - "HOST=${HOST}"
+  stock:
+    build: 
+      context: ./STOCK
+      dockerfile: Dockerfile
+    volumes:
+      - "./stock:/stock"
+    ports:
+      - "81:4000"
+    command:
+      - "npm"
+      - "start"
+    env_file:
+      - .env
+    environment:
+      - "PORT_STOCK=$PORT"
+      - "MONGO_URI_STOCK=$MONGO_URI_STOCK"
+      - "HOST=${HOST}"
+    
+  
+    
